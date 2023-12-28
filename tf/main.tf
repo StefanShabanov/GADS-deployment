@@ -16,6 +16,7 @@ resource "aws_instance" "example_server" {
     newgrp docker
     sudo snap disable docker
     sudo snap enable docker
+    sudo docker run -d --restart=always --name mongodb -p 27017:27017 mongo:6.0
 
     ### Install GO
     sudo apt-get update && sudo apt-get -y install golang-go
@@ -24,15 +25,29 @@ resource "aws_instance" "example_server" {
     sudo apt install -y nodejs
   EOF
 
-  provisioner "file" {
-    source = "../docker.sh"
-    destination = "/tmp/docker.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/docker.sh",
-      "/tmp/script.sh args",
-      ]
-  }
+#  provisioner "file" {
+#    source      = "../docker.sh"
+#    destination = "/tmp/docker.sh"
+#
+#    connection {
+#      type        = "ssh"
+#      user        = "ubuntu"               # or the appropriate username for your AMI
+#      private_key = file("../../GADS.pem") # replace with your private key path
+#      host        = self.public_ip
+#    }
+#  }
+#
+#  provisioner "remote-exec" {
+#    inline = [
+#      "chmod +x /tmp/docker.sh",
+#      "/tmp/docker.sh args",
+#    ]
+#
+#    connection {
+#      type        = "ssh"
+#      user        = "ubuntu"               # or the appropriate username for your AMI
+#      private_key = file("../../GADS.pem") # replace with your private key path
+#      host        = self.public_ip
+#    }
+#  }
 }
